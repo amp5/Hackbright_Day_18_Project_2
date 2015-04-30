@@ -7,13 +7,12 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 import jinja2
 
 
 import model
-
 
 app = Flask(__name__)
 
@@ -58,14 +57,23 @@ def show_melon(id):
                            display_melon=melon)
 
 
-@app.route("/cart")
-def shopping_cart():
+@app.route("/cart/", methods=["GET"])
+def shopping_cart(id):
     """Display content of shopping cart."""
 
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
 
-    return render_template("cart.html")
+    # melon == an intance of the Melon class   
+ 
+
+    melon = model.Melon.get_by_id(id)
+    price = melon.price_str()
+    quantity = 1
+    print price
+    return render_template("cart.html", melon_inst=melon, quantity=1,  price=price)
+
+
 
 
 @app.route("/add_to_cart/<int:id>", methods=["GET"])
@@ -80,19 +88,28 @@ def add_to_cart(id):
     # TODO: Finish shopping cart functionality
     #   - use session variables to hold cart list
 
-    if session:
-        session['id'] = [id]
+    print session
+
+    session["cart"] = session.get("cart", [])
+
     #we need to make it have an "if this is in this list, don't add it, append the current value
     # quantity.  IF it is not in the list, add it. 
     # the key is id and the value is quantity "
 
-    melon = model.Melson.get_by_id(id)
-    # melon == an intance of the Melon class   
+    melon = model.Melon.get_by_id(id)
+    session["cart"].append(melon.id)
+    
+    # return redirect(url_for("shopping_cart"))
+
+
+    melon = model.Melon.get_by_id(id)
     price = melon.price_str()
     quantity = 1
     print price
     return render_template("cart.html", melon_inst=melon, quantity=1,  price=price)
 
+# problem redirecting to /cart not able to pull id from /add_to_cart
+#use id numbers to add all this to our html cart
 
 
 @app.route("/login", methods=["GET"])
