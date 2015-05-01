@@ -17,8 +17,8 @@
          <tr>
             <td> {{item}} </td> 
             <td>  {{melon_dict[item][1]}} </td>   
-            <td> {{melon_dict[item][0]}} </td>
-            <td> {{melon_dict[item][2]}} </td>
+            <td> ${{'%.02f' % melon_dict[item][0]}} </td>
+            <td> ${{'%.02f' % melon_dict[item][2]}} </td>
         </tr>
             {% endfor %}
 
@@ -33,3 +33,4 @@
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 
 {% endblock %}
+
