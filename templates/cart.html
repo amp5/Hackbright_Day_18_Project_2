@@ -13,17 +13,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td> {{ melon_inst.common_name}} </td>
-            <td> {{ quantity }} </td>
-            <td> ${{'%.02f' % melon_inst.price}} </td>
-            <td> {{ quantity * price }} </td>
-  
+            {% for item in melon_dict %}
+         <tr>
+            <td> {{item}} </td> 
+            <td>  {{melon_dict[item][1]}} </td>   
+            <td> {{melon_dict[item][0]}} </td>
+            <td> {{melon_dict[item][2]}} </td>
         </tr>
+            {% endfor %}
+
         </tbody>
     </table>
 
-    <h3>CHANGE THIS!!!! Total: $27.00</h3>
+    <h3> 
+
+
+        CHANGE THIS!!!! Total: $27.00</h3>
 
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 

@@ -58,22 +58,49 @@ def show_melon(id):
 
 
 @app.route("/cart/", methods=["GET"])
-def shopping_cart(id):
+def shopping_cart():
     """Display content of shopping cart."""
 
     # TODO: Display the contents of the shopping cart.
     #   - The cart is a list in session containing melons added
 
-    # melon == an intance of the Melon class   
- 
-
-    melon = model.Melon.get_by_id(id)
-    price = melon.price_str()
-    quantity = 1
-    print price
-    return render_template("cart.html", melon_inst=melon, quantity=1,  price=price)
+    # melon == an intance of the Melon class  
 
 
+    # can use session without bringing it in anywhere because session is kind of like a global variable 
+    print session
+    print "I'm here!!!!!"
+
+    melon_info_dict = {}
+    melon_qnty = 1
+
+    for num in session['cart']:
+        melon = model.Melon.get_by_id(num)
+
+        melon_name = melon.common_name
+        melon_price = melon.price
+        
+
+        if melon_name in melon_info_dict:
+            melon_qnty += 1
+            melon_info_dict[melon_name] = [melon_price, melon_qnty]
+        
+        total = melon_price * melon_qnty
+
+        melon_info_dict[melon_name] = [melon_price, melon_qnty, total]
+
+
+    return render_template("cart.html",
+                           melon_dict=melon_info_dict, melon_name=melon_name, melon_price=melon_price, melon_qnty=melon_qnty)
+
+    # melon = model.Melon.get_by_id(id)
+    # price = melon.price_str()
+    # quantity = 1
+    # print price
+    # return render_template("cart.html", melon_inst=melon, quantity=1,  price=price)
+
+# get a list of instances fo melons. pulled from a for loop from our list of sessions which we can call from our model.py
+#for each id in list session, want to pull out an instance of our melon with id match. Do this to get common_name and quanitity to display in cart.html 
 
 
 @app.route("/add_to_cart/<int:id>", methods=["GET"])
@@ -92,24 +119,17 @@ def add_to_cart(id):
 
     session["cart"] = session.get("cart", [])
 
-    #we need to make it have an "if this is in this list, don't add it, append the current value
-    # quantity.  IF it is not in the list, add it. 
-    # the key is id and the value is quantity "
-
     melon = model.Melon.get_by_id(id)
+    # print melon
+    # print type(melon)
     session["cart"].append(melon.id)
-    
-    # return redirect(url_for("shopping_cart"))
+   
 
+    print "*"*10
+    print session 
+    return redirect(url_for("shopping_cart"))
+   
 
-    melon = model.Melon.get_by_id(id)
-    price = melon.price_str()
-    quantity = 1
-    print price
-    return render_template("cart.html", melon_inst=melon, quantity=1,  price=price)
-
-# problem redirecting to /cart not able to pull id from /add_to_cart
-#use id numbers to add all this to our html cart
 
 
 @app.route("/login", methods=["GET"])
